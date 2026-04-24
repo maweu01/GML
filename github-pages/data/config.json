@@ -1,0 +1,107 @@
+{
+  "app": {
+    "name": "Guardian ML",
+    "version": "1.0.0",
+    "mode": "static",
+    "description": "Intelligent Risk & Decision Support Platform"
+  },
+  "risk_profiles": [
+    {
+      "id": "P-001",
+      "entity": "Transaction Alpha",
+      "risk_score": 0.82,
+      "risk_label": "HIGH",
+      "features": { "frequency": 18, "amount_deviation": 3.2, "velocity": 0.94, "recency": 2 },
+      "alerts": ["Unusual velocity spike", "Amount deviation above 3σ"],
+      "recommendation": "Immediate review required. Flag for manual inspection."
+    },
+    {
+      "id": "P-002",
+      "entity": "Transaction Beta",
+      "risk_score": 0.47,
+      "risk_label": "MEDIUM",
+      "features": { "frequency": 7, "amount_deviation": 1.1, "velocity": 0.43, "recency": 12 },
+      "alerts": ["Moderate anomaly detected"],
+      "recommendation": "Monitor over next 48h. Secondary check advised."
+    },
+    {
+      "id": "P-003",
+      "entity": "Transaction Gamma",
+      "risk_score": 0.12,
+      "risk_label": "LOW",
+      "features": { "frequency": 2, "amount_deviation": 0.2, "velocity": 0.08, "recency": 30 },
+      "alerts": [],
+      "recommendation": "No action required. Within normal parameters."
+    },
+    {
+      "id": "P-004",
+      "entity": "Transaction Delta",
+      "risk_score": 0.71,
+      "risk_label": "HIGH",
+      "features": { "frequency": 14, "amount_deviation": 2.7, "velocity": 0.81, "recency": 5 },
+      "alerts": ["Repeated pattern anomaly", "Cross-entity correlation flag"],
+      "recommendation": "Escalate to risk committee. Correlation analysis required."
+    },
+    {
+      "id": "P-005",
+      "entity": "Transaction Epsilon",
+      "risk_score": 0.29,
+      "risk_label": "LOW",
+      "features": { "frequency": 3, "amount_deviation": 0.5, "velocity": 0.15, "recency": 22 },
+      "alerts": [],
+      "recommendation": "Acceptable risk. Continue standard monitoring."
+    }
+  ],
+  "model_metrics": {
+    "logistic_regression": {
+      "accuracy": 0.8740,
+      "precision": 0.8612,
+      "recall": 0.8790,
+      "f1_score": 0.8700,
+      "n_train": 4200,
+      "n_test": 1050
+    },
+    "random_forest": {
+      "accuracy": 0.9280,
+      "precision": 0.9214,
+      "recall": 0.9311,
+      "f1_score": 0.9262,
+      "n_train": 4200,
+      "n_test": 1050
+    }
+  },
+  "best_model": "random_forest",
+  "feature_importance": {
+    "velocity": 0.312,
+    "amount_deviation": 0.248,
+    "frequency": 0.195,
+    "recency": 0.141,
+    "cross_entity_score": 0.064,
+    "time_of_day": 0.040
+  },
+  "insights": [
+    "High predictive performance — random_forest achieves F1=92.62%.",
+    "Model accuracy is satisfactory for production deployment.",
+    "Significant performance gap between models (ΔF1=5.62%). Best model strongly preferred."
+  ],
+  "recommendations": [
+    "Deploy 'random_forest' as the primary risk scoring model.",
+    "Monitor model drift on live data with a rolling evaluation window.",
+    "Retrain monthly or when F1 drops below 0.75 on production data.",
+    "Use SHAP values for individual prediction explainability."
+  ],
+  "trend_data": {
+    "labels": ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+    "high_risk": [12, 18, 14, 22, 19, 27, 31, 24, 18, 22, 29, 35],
+    "medium_risk": [34, 41, 38, 52, 47, 55, 60, 53, 44, 51, 58, 63],
+    "low_risk": [120, 134, 128, 145, 139, 152, 160, 148, 131, 141, 157, 168]
+  },
+  "system_stats": {
+    "total_analyzed": 5250,
+    "high_risk_count": 325,
+    "medium_risk_count": 837,
+    "low_risk_count": 4088,
+    "model_version": "v2.4.1",
+    "last_trained": "2025-06-15"
+  }
+}

@@ -1,0 +1,38 @@
+app:
+  name: "Guardian ML"
+  version: "1.0.0"
+  description: "Intelligent Risk & Decision Support Platform"
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+  reload: true
+
+ml:
+  random_seed: 42
+  test_size: 0.2
+  models:
+    - logistic_regression
+    - random_forest
+  model_dir: "data/models"
+  data_dir: "data/uploads"
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+  file: "data/guardian_ml.log"
+
+risk:
+  thresholds:
+    low: 0.33
+    medium: 0.66
+    high: 1.0
+  labels:
+    - "LOW"
+    - "MEDIUM"
+    - "HIGH"
+
+visualization:
+  output_dir: "data/plots"
+  dpi: 150
+  format: "png"

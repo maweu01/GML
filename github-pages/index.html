@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guardian ML — Risk & Decision Platform</title>
+
+  <!-- REQUIRED: Update repo-name before deploying to GitHub Pages -->
+  <base href="/Guardian-ML/" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+
+  <!-- ── Header ──────────────────────────────── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">Guardian <span class="accent">ML</span></span>
+        <span class="mode-badge">STATIC MODE</span>
+      </div>
+      <nav class="nav">
+        <span class="badge badge--live" id="status-badge">● System Ready</span>
+        <span class="model-label" id="model-label">—</span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Dashboard Cards ─────────────────────── -->
+  <div class="dash-section">
+    <div class="dash-cards">
+      <div class="dash-card">
+        <div class="dc-icon">📊</div>
+        <div class="dc-label">Total Analyzed</div>
+        <div class="dc-value" id="dc-total">—</div>
+      </div>
+      <div class="dash-card dash-card--danger">
+        <div class="dc-icon">🔴</div>
+        <div class="dc-label">High Risk</div>
+        <div class="dc-value" id="dc-high">—</div>
+      </div>
+      <div class="dash-card dash-card--warn">
+        <div class="dc-icon">🟡</div>
+        <div class="dc-label">Medium Risk</div>
+        <div class="dc-value" id="dc-medium">—</div>
+      </div>
+      <div class="dash-card dash-card--success">
+        <div class="dc-icon">🟢</div>
+        <div class="dc-label">Low Risk</div>
+        <div class="dc-value" id="dc-low">—</div>
+      </div>
+      <div class="dash-card dash-card--accent">
+        <div class="dc-icon">🧠</div>
+        <div class="dc-label">Best F1 Score</div>
+        <div class="dc-value" id="dc-f1">—</div>
+      </div>
+      <div class="dash-card">
+        <div class="dc-icon">🗓️</div>
+        <div class="dc-label">Last Trained</div>
+        <div class="dc-value dc-value--sm" id="dc-trained">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main Grid ───────────────────────────── -->
+  <main class="main">
+
+    <!-- LEFT column -->
+    <aside class="left-col">
+
+      <!-- Controls -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-icon">🎛️</span>
+          <h3>Analysis Controls</h3>
+        </div>
+        <div class="card-body">
+          <button class="btn btn--primary btn--full" id="btn-run">
+            ▶ Run Analysis
+          </button>
+          <button class="btn btn--ghost btn--full" id="btn-refresh">
+            ↺ Refresh Data
+          </button>
+          <div class="divider"></div>
+          <label class="form-label">Simulation Profile
+            <select class="form-input" id="profile-select">
+              <option value="all">All Profiles</option>
+              <option value="HIGH">High Risk Only</option>
+              <option value="MEDIUM">Medium Risk Only</option>
+              <option value="LOW">Low Risk Only</option>
+            </select>
+          </label>
+          <label class="form-label">Risk Threshold
+            <input type="range" id="threshold-slider" min="0" max="100" value="50" class="slider" />
+            <span class="slider-val" id="threshold-val">50%</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Model Performance Card -->
+      <div class="card" id="model-card" style="display:none">
+        <div class="card-header">
+          <span class="card-icon">📈</span>
+          <h3>Model Performance</h3>
+        </div>
+        <div class="card-body" id="model-card-body"></div>
+      </div>
+
+      <!-- Insights -->
+      <div class="card" id="insights-card" style="display:none">
+        <div class="card-header">
+          <span class="card-icon">💡</span>
+          <h3>Insights</h3>
+        </div>
+        <div class="card-body" id="insights-body"></div>
+      </div>
+
+    </aside>
+
+    <!-- RIGHT column -->
+    <section class="right-col">
+
+      <!-- Risk Profiles Table -->
+      <div class="card" id="card-profiles" style="display:none">
+        <div class="card-header">
+          <span class="card-icon">🛡️</span>
+          <h3>Risk Detection Results</h3>
+          <span class="count-badge" id="profile-count"></span>
+        </div>
+        <div class="card-body" id="profiles-container"></div>
+      </div>
+
+      <!-- Trend Chart -->
+      <div class="card" id="card-trend" style="display:none">
+        <div class="card-header">
+          <span class="card-icon">📉</span>
+          <h3>Risk Trend (12 Months)</h3>
+        </div>
+        <div class="card-body">
+          <div id="chart-trend" style="height:280px"></div>
+        </div>
+      </div>
+
+      <!-- Feature Importance Chart -->
+      <div class="card" id="card-fi" style="display:none">
+        <div class="card-header">
+          <span class="card-icon">🔬</span>
+          <h3>Feature Importance</h3>
+        </div>
+        <div class="card-body">
+          <div id="chart-fi" style="height:260px"></div>
+        </div>
+      </div>
+
+      <!-- Metrics Comparison -->
+      <div class="card" id="card-metrics" style="display:none">
+        <div class="card-header">
+          <span class="card-icon">⚖️</span>
+          <h3>Model Comparison</h3>
+        </div>
+        <div class="card-body">
+          <div id="chart-metrics" style="height:260px"></div>
+        </div>
+      </div>
+
+      <!-- Recommendations -->
+      <div class="card" id="card-recs" style="display:none">
+        <div class="card-header">
+          <span class="card-icon">📋</span>
+          <h3>Recommendations</h3>
+        </div>
+        <div class="card-body" id="recs-body"></div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>Guardian ML v1.0.0 — Static Simulation Mode &nbsp;|&nbsp;
+      Deploy with GitHub Pages &nbsp;|&nbsp;
+      <a href="https://github.com" target="_blank" rel="noopener" style="color:var(--accent)">GitHub</a>
+    </span>
+  </footer>
+
+  <div class="spinner-overlay" id="spinner" style="display:none">
+    <div class="spinner"></div>
+    <p class="spinner-msg" id="spinner-msg">Running Analysis...</p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
