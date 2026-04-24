@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guardian ML — Risk & Decision Platform</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">Guardian <span class="accent">ML</span></span>
+      </div>
+      <nav class="nav">
+        <span class="badge badge--live" id="status-badge">● Connecting...</span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Pipeline Steps -->
+    <section class="pipeline-bar">
+      <div class="step" id="step-upload" data-step="1">
+        <div class="step-num">1</div><div class="step-label">Upload</div>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step" id="step-process" data-step="2">
+        <div class="step-num">2</div><div class="step-label">Process</div>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step" id="step-train" data-step="3">
+        <div class="step-num">3</div><div class="step-label">Train</div>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step" id="step-evaluate" data-step="4">
+        <div class="step-num">4</div><div class="step-label">Evaluate</div>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step" id="step-predict" data-step="5">
+        <div class="step-num">5</div><div class="step-label">Predict</div>
+      </div>
+    </section>
+
+    <div class="content-grid">
+
+      <!-- LEFT: Controls -->
+      <aside class="panel panel--controls">
+
+        <!-- Step 1: Upload -->
+        <div class="card" id="card-upload">
+          <div class="card-header">
+            <span class="card-icon">📂</span>
+            <h3>1. Upload Dataset</h3>
+          </div>
+          <div class="card-body">
+            <label class="file-drop" id="drop-zone">
+              <input type="file" id="file-input" accept=".csv,.json" hidden />
+              <span class="drop-icon">⬆</span>
+              <span class="drop-text">Drop CSV or JSON here<br/><small>or click to browse</small></span>
+            </label>
+            <button class="btn btn--primary" id="btn-upload" disabled>Upload File</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Process -->
+        <div class="card" id="card-process">
+          <div class="card-header">
+            <span class="card-icon">⚙️</span>
+            <h3>2. Preprocess</h3>
+          </div>
+          <div class="card-body">
+            <label class="form-label">Target Column (optional)
+              <input type="text" id="target-col" class="form-input" placeholder="e.g. label, target, class" />
+            </label>
+            <button class="btn btn--primary" id="btn-process" disabled>Run Preprocessing</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Train -->
+        <div class="card" id="card-train">
+          <div class="card-header">
+            <span class="card-icon">🧠</span>
+            <h3>3. Train Models</h3>
+          </div>
+          <div class="card-body">
+            <p class="hint">Trains Logistic Regression + Random Forest with evaluation metrics.</p>
+            <button class="btn btn--primary" id="btn-train" disabled>Train Models</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Predict -->
+        <div class="card" id="card-predict">
+          <div class="card-header">
+            <span class="card-icon">🎯</span>
+            <h3>4. Risk Prediction</h3>
+          </div>
+          <div class="card-body">
+            <label class="form-label">Model
+              <select id="model-select" class="form-input">
+                <option value="random_forest">Random Forest</option>
+                <option value="logistic_regression">Logistic Regression</option>
+              </select>
+            </label>
+            <label class="form-label">Input JSON
+              <textarea id="predict-input" class="form-input form-textarea" placeholder='{"feature1": 1.2, "feature2": 3.4}'></textarea>
+            </label>
+            <button class="btn btn--accent" id="btn-predict" disabled>Run Prediction</button>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- RIGHT: Results -->
+      <section class="panel panel--results">
+
+        <!-- Dashboard Cards -->
+        <div class="dash-cards" id="dash-cards">
+          <div class="dash-card" id="dc-status">
+            <div class="dc-label">System</div>
+            <div class="dc-value" id="dc-status-val">—</div>
+          </div>
+          <div class="dash-card" id="dc-samples">
+            <div class="dc-label">Samples</div>
+            <div class="dc-value" id="dc-samples-val">—</div>
+          </div>
+          <div class="dash-card" id="dc-features">
+            <div class="dc-label">Features</div>
+            <div class="dc-value" id="dc-features-val">—</div>
+          </div>
+          <div class="dash-card dc-risk" id="dc-risk">
+            <div class="dc-label">Risk Score</div>
+            <div class="dc-value" id="dc-risk-val">—</div>
+          </div>
+        </div>
+
+        <!-- Log output -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-icon">📋</span>
+            <h3>Pipeline Log</h3>
+            <button class="btn btn--ghost btn--sm" id="btn-clear-log">Clear</button>
+          </div>
+          <div class="card-body">
+            <div class="log-box" id="log-box"></div>
+          </div>
+        </div>
+
+        <!-- Metrics table -->
+        <div class="card" id="card-metrics" style="display:none">
+          <div class="card-header">
+            <span class="card-icon">📊</span>
+            <h3>Model Metrics</h3>
+          </div>
+          <div class="card-body">
+            <div id="metrics-table-container"></div>
+          </div>
+        </div>
+
+        <!-- Visualizations -->
+        <div class="card" id="card-viz" style="display:none">
+          <div class="card-header">
+            <span class="card-icon">📈</span>
+            <h3>Visualizations</h3>
+            <button class="btn btn--ghost btn--sm" id="btn-viz">Load Charts</button>
+          </div>
+          <div class="card-body">
+            <div id="viz-metrics" class="chart-img-wrap"></div>
+            <div id="viz-fi" class="chart-img-wrap"></div>
+          </div>
+        </div>
+
+        <!-- Prediction Result -->
+        <div class="card" id="card-result" style="display:none">
+          <div class="card-header">
+            <span class="card-icon">🎯</span>
+            <h3>Prediction Result</h3>
+          </div>
+          <div class="card-body">
+            <div id="prediction-result"></div>
+          </div>
+        </div>
+
+        <!-- Insights -->
+        <div class="card" id="card-insights" style="display:none">
+          <div class="card-header">
+            <span class="card-icon">💡</span>
+            <h3>Insights & Recommendations</h3>
+          </div>
+          <div class="card-body" id="insights-body"></div>
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>Guardian ML v1.0.0 — Intelligent Risk & Decision Support Platform</span>
+  </footer>
+
+  <div class="spinner-overlay" id="spinner" style="display:none">
+    <div class="spinner"></div>
+    <p class="spinner-msg" id="spinner-msg">Processing...</p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
